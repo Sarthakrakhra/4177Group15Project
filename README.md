@@ -29,7 +29,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## References
 
-Help for email validation: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-Material UI: https://material-ui.com
-ReactJS framework: https://reactjs.org/
-Create-react-app: https://facebook.github.io/create-react-app/docs/getting-started
+Help for email validation: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript <br />
+Material UI: https://material-ui.com <br />
+ReactJS framework: https://reactjs.org/ <br />
+Create-react-app: https://facebook.github.io/create-react-app/docs/getting-started <br />
