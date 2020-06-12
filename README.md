@@ -66,3 +66,8 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+### References
+
+Help for email validation: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+Material UI: https://material-ui.com
