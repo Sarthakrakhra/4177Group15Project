@@ -9,6 +9,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import { withRouter } from "react-router-dom";
+import { Drawer } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import HomeIcon from "@material-ui/icons/Home";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -67,17 +75,30 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     padding: 10,
   },
+  menuList: {
+    width: 250,
+  },
+  menuLink: {
+    textDecoration: "none",
+    color: "inherit",
+  },
 }));
 
 const Navigation = (props) => {
   const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const searchInputRef = useRef();
+  const ENTER_KEY = 13;
 
   const handleSearch = () => {
-    props.history.push("/search/", { searchQuery: searchQuery });
-    setSearchQuery("");
-    searchInputRef.current.value = "";
+    if (searchQuery.trim() !== "") {
+      props.history.push("/search/", { searchQuery: searchQuery });
+      setSearchQuery("");
+      searchInputRef.current.value = "";
+    } else {
+      alert("Please enter a search query");
+    }
   };
 
   const goHome = () => {
@@ -88,8 +109,44 @@ const Navigation = (props) => {
     props.history.push("/loginRegister");
   };
 
+  const keyPress = (event) => {
+    if (event.keyCode === ENTER_KEY) {
+      handleSearch();
+    }
+  };
+
   return (
     <div className={classes.grow}>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <div className={classes.menuList} onClick={() => setDrawerOpen(false)}>
+          <List>
+            <ListItem button>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/" className={classes.menuLink}>
+                  Read-it
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <VerifiedUserIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/loginRegister" className={classes.menuLink}>
+                  Log-in/Register
+                </Link>
+              </ListItemText>
+            </ListItem>
+          </List>
+        </div>
+      </Drawer>
       <AppBar position="static">
         <Toolbar>
           <div className={classes.grow}>
@@ -98,6 +155,7 @@ const Navigation = (props) => {
               className={classes.menuButton}
               color="inherit"
               aria-label="open drawer"
+              onClick={() => setDrawerOpen(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -114,7 +172,10 @@ const Navigation = (props) => {
             <InputBase
               className={classes.input}
               placeholder="Search"
-              inputProps={{ "aria-label": "search google maps" }}
+              inputProps={{
+                "aria-label": "search google maps",
+                onKeyDown: (e) => keyPress(e),
+              }}
               onChange={(event) => setSearchQuery(event.target.value)}
               inputRef={searchInputRef}
             />
@@ -131,7 +192,7 @@ const Navigation = (props) => {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <Button color="inherit" onClick={() => goToLogin()}>
-              Login/Register
+              Log-in/Register
             </Button>
           </div>
         </Toolbar>

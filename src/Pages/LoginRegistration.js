@@ -11,42 +11,78 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import "./../css/LoginPageCss.scss";
+import { Link } from "react-router-dom";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
+const initialState = {
+  username: "",
+  password: "",
+  email: "",
+  confirmPassword: "",
+  userRole: "",
+  generalErrors: {
+    username: false,
+    password: false,
+  },
+  registrationErrors: {
+    email: false,
+    confirmPassword: false,
+    userRole: false,
+  },
+  showPassword: false,
+  registrationState: false,
+  dialogOpen: false,
+};
 
 class LoginRegistration extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      username: "",
-      password: "",
-      email: "",
-      confirmPassword: "",
-      generalErrors: {
-        username: false,
-        password: false,
-      },
-      registrationErrors: {
-        email: false,
-        confirmPassword: false,
-      },
-      showPassword: false,
-      registrationState: false,
-    };
+    this.state = initialState;
 
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleShowPassword = this.handleShowPassword.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleAuthentication = this.handleAuthentication.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(
       this
     );
+    this.changeForm = this.changeForm.bind(this);
+    this.handleUserRoleCange = this.handleUserRoleCange.bind(this);
   }
 
   handlePasswordChange(event) {
+    const passwordInput = event.target.value;
+
     this.setState({
-      password: event.target.value,
+      password: passwordInput,
     });
+
+    if (passwordInput.length !== 0) {
+      this.setState({
+        generalErrors: {
+          ...this.state.generalErrors,
+          password: false,
+        },
+      });
+    } else {
+      this.setState({
+        generalErrors: {
+          ...this.state.generalErrors,
+          password: true,
+        },
+      });
+    }
   }
 
   handleUsernameChange(event) {
@@ -59,15 +95,43 @@ class LoginRegistration extends Component {
     if (inputText.trim() === "" && inputText.length !== 0) {
       this.setState({
         generalErrors: {
+          ...this.state.generalErrors,
           username: true,
-          password: this.state.generalErrors.password,
         },
       });
     } else {
       this.setState({
         generalErrors: {
+          ...this.state.generalErrors,
           username: false,
-          password: this.state.generalErrors.password,
+        },
+      });
+    }
+  }
+
+  handleUserRoleCange(event) {
+    const selection = event.target.value;
+    this.setState(
+      {
+        userRole: selection,
+      },
+      () => this.checkUserRoleError()
+    );
+  }
+
+  async checkUserRoleError() {
+    if (!this.state.userRole) {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          userRole: true,
+        },
+      });
+    } else {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          userRole: false,
         },
       });
     }
@@ -79,10 +143,31 @@ class LoginRegistration extends Component {
     });
   }
 
-  handleLogin(event) {
+  async handleAuthentication(event) {
     event.preventDefault();
 
-    console.log(this.state.password);
+    await this.checkPasswordError();
+
+    if (this.state.registrationState) {
+      if (this.state.email.length === 0) {
+        await this.validateEmail(this.state.email);
+      }
+
+      if (this.state.confirmPassword.length === 0) {
+        await this.validateConfirmPassword(this.state.confirmPassword);
+      }
+
+      if (!this.state.userRole) await this.checkUserRoleError();
+    }
+
+    if (await this.checkAllErrors()) {
+      this.setState({
+        dialogOpen: true,
+      });
+    }
+  }
+
+  async checkPasswordError() {
     if (this.state.password.length === 0) {
       this.setState(
         {
@@ -106,9 +191,81 @@ class LoginRegistration extends Component {
     }
   }
 
+  async checkAllErrors() {
+    for (const error in this.state.generalErrors) {
+      if (this.state.generalErrors[error]) return false;
+    }
+
+    if (this.state.registrationState) {
+      for (const error in this.state.registrationErrors) {
+        if (this.state.registrationErrors[error]) return false;
+      }
+    }
+
+    return true;
+  }
+
   // help for this function was taken from https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-  handleEmailChange() {}
-  handleConfirmPasswordChange() {}
+  handleEmailChange(event) {
+    const inputValue = event.target.value;
+    this.setState(
+      {
+        email: inputValue,
+      },
+      () => this.validateEmail(inputValue)
+    );
+  }
+
+  async validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const valid = re.test(String(email).toLowerCase());
+    if (!valid) {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          email: true,
+        },
+      });
+    } else {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          email: false,
+        },
+      });
+    }
+  }
+
+  handleConfirmPasswordChange(event) {
+    const inputValue = event.target.value;
+    this.setState(
+      {
+        confirmPassword: inputValue,
+      },
+      () => this.validateConfirmPassword(inputValue)
+    );
+  }
+
+  async validateConfirmPassword(confirmPasswordInput) {
+    if (
+      confirmPasswordInput !== this.state.password ||
+      confirmPasswordInput.length === 0
+    ) {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          confirmPassword: true,
+        },
+      });
+    } else {
+      this.setState({
+        registrationErrors: {
+          ...this.state.registrationErrors,
+          confirmPassword: false,
+        },
+      });
+    }
+  }
 
   checkUsernameError = () => {
     if (this.state.username.length === 0) {
@@ -127,9 +284,21 @@ class LoginRegistration extends Component {
       });
     }
   };
+
+  changeForm = (prevRegistrationState) => {
+    console.log(prevRegistrationState);
+    this.setState(initialState, () =>
+      this.setState({
+        registrationState: !prevRegistrationState,
+      })
+    );
+  };
+
   render() {
     let emailRegistrationField = null;
     let confirmPasswordRegistrationField = null;
+    let confirmPasswordIcon = null;
+    let userRoleSelection = null;
 
     if (this.state.registrationState) {
       emailRegistrationField = (
@@ -137,8 +306,9 @@ class LoginRegistration extends Component {
           label="Email"
           required
           name="Email"
+          value={this.state.email}
           onChange={this.handleEmailChange}
-          // error={this.state.generalErrors.password}
+          error={this.state.registrationErrors.email}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -150,47 +320,81 @@ class LoginRegistration extends Component {
         />
       );
 
+      confirmPasswordIcon = this.state.registrationErrors.confirmPassword ? (
+        <ClearIcon />
+      ) : (
+        <CheckIcon />
+      );
       confirmPasswordRegistrationField = (
         <TextField
           label="Confirm Password"
           required
           name="confirmPassword"
+          value={this.state.confirmPassword}
           onChange={this.handleConfirmPasswordChange}
-          // error={this.state.generalErrors.password}
+          error={this.state.registrationErrors.confirmPassword}
           type="password"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  // onClick={this.handleShowPassword}
-                  edge="end"
-                >
-                  {/* {this.state.showPassword ? (
-                          <Visibility />
-                        ) : (
-                            <VisibilityOff />
-                          )} */}
-                </IconButton>
+                {confirmPasswordIcon}
               </InputAdornment>
             ),
           }}
           variant="outlined"
         />
       );
+
+      userRoleSelection = (
+        <FormControl
+          variant="outlined"
+          error={this.state.registrationErrors.userRole}
+        >
+          <InputLabel>User role</InputLabel>
+          <Select
+            labelId="selectUserRole"
+            value={this.state.userRole}
+            onChange={this.handleUserRoleCange}
+            label="Age"
+          >
+            <MenuItem value="Professor">Professor</MenuItem>
+            <MenuItem value="Student">Student</MenuItem>
+          </Select>
+        </FormControl>
+      );
     }
 
     return (
       <div>
+        <Dialog
+          open={this.state.dialogOpen}
+          aria-describedby="alert-dialog-redirect-to-home"
+        >
+          <DialogContent>
+            <DialogContentText>
+              {this.state.registrationState
+                ? `Welcome ${this.state.username}. You are now registerd and logged in! `
+                : `Welcome ${this.state.username}. You are now logged in!`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Link to="/">
+              <Button color="primary" autoFocus>
+                Back to home page
+              </Button>
+            </Link>
+          </DialogActions>
+        </Dialog>
         <Container maxWidth="sm" style={{ marginTop: "1em" }}>
           <Paper>
             <Typography variant="h2" align="left">
-              Login
+              {this.state.registrationState ? "Register " : "Login"}
             </Typography>
             <form className="input-group">
               <TextField
                 label="Username"
                 error={this.state.generalErrors.username}
+                value={this.state.username}
                 required
                 name="username"
                 onChange={this.handleUsernameChange}
@@ -204,9 +408,11 @@ class LoginRegistration extends Component {
                 variant="outlined"
               />
               {emailRegistrationField}
+              {userRoleSelection}
               <TextField
                 label="Password"
                 required
+                value={this.state.password}
                 name="password"
                 onChange={this.handlePasswordChange}
                 error={this.state.generalErrors.password}
@@ -234,7 +440,7 @@ class LoginRegistration extends Component {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={this.handleLogin}
+                onClick={this.handleAuthentication}
               >
                 <Input
                   type="submit"
@@ -249,11 +455,7 @@ class LoginRegistration extends Component {
                 gutterBottom
                 color="primary"
                 className="register-link"
-                onClick={() =>
-                  this.setState({
-                    registrationState: !this.state.registrationState,
-                  })
-                }
+                onClick={() => this.changeForm(this.state.registrationState)}
               >
                 {this.state.registrationState
                   ? "Already have an account? Click here to Log in"
