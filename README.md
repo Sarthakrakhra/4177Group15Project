@@ -1,36 +1,49 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Assignment 2
 
-## Available Scripts
+This is an individual assignment showing the front-end of the discussion forum application discussed in the previous assignment. It is called Read-it. It is currently hosted on Heroku https://a2-sarthak-rakhra.herokuapp.com
 
-In the project directory, you can run:
+- Date Created: 10 06 2020
+- Last Modification Date: 13 06 2020
 
-### `npm start`
+List of pages:
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [Home page](https://a2-sarthak-rakhra.herokuapp.com)
+- [Login/Register Page](https://a2-sarthak-rakhra.herokuapp.com/loginRegister)
+- [Search Page](https://a2-sarthak-rakhra.herokuapp.com/search)
+- [Forum page](https://a2-sarthak-rakhra.herokuapp.com/forum)
+- [Individual discussion post page](https://a2-sarthak-rakhra.herokuapp.com/forum/1)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Authors
 
-### `npm test`
+[Sarthak Rakhra](sarthak.rakhra@dal.ca) - Creator of the project
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting started
 
-### `npm run build`
+The following instructions will show you how to run a local copy of the project
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+To ensure the app can run on your local machine you will need [NodeJS](https://nodejs.org/en/), [NPM](https://www.npmjs.com), and [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Running the app on localhost
 
-## References
+```
+npm i
+npm start
+```
+
+Open the app on http://localhost:8080 as NodeJS is serving the build file on that port. If you wish to use a development server, run `npm run development` instead of `npm start`.
+
+## Built with
+
+The front end of this application was built using ReactJS and Material UI. The reason ReactJS was selected as the front-end framework was because of the advantages it provides. Such as component-based development, state management, and fast rendering of the page in the browser. Material UI was selected as the
+
+- [Material UI](https://material-ui.com)
+- [ReactJS framework](https://reactjs.org/)
+- [Create-react-app](https://facebook.github.io/create-react-app/docs/getting-started)
+- [Heroku](https://www.heroku.com)
+
+## References/Sources used for help
 
 Help for email validation: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript <br />
-Material UI: https://material-ui.com <br />
-ReactJS framework: https://reactjs.org/ <br />
-Create-react-app: https://facebook.github.io/create-react-app/docs/getting-started <br />
-Lorum Ipsum text: https://www.lipsum.com/ <br/>
+Lorum Ipsum text for dummy data: https://www.lipsum.com/
