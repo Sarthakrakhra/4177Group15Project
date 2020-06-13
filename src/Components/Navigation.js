@@ -17,6 +17,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -141,6 +142,16 @@ const Navigation = (props) => {
               <ListItemText>
                 <Link to="/loginRegister" className={classes.menuLink}>
                   Log-in/Register
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/forum" className={classes.menuLink}>
+                  Forums
                 </Link>
               </ListItemText>
             </ListItem>

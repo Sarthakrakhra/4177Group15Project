@@ -7,6 +7,7 @@ import { Typography } from "@material-ui/core";
 import cardData from "./../CardData";
 import CardComment from "./CardComment";
 import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -47,7 +48,9 @@ const ForumCard = (props) => {
           {cardData.map((val, key) => {
             return <CardComment comment={val} key={key} />;
           })}
-          <ExpandButton variant="contained">Expand</ExpandButton>
+          <Link to={`/forum/${props.forumId}`}>
+            <ExpandButton variant="contained">Expand</ExpandButton>
+          </Link>
         </CardContent>
       </Card>
     </div>

@@ -46,7 +46,7 @@ const Search = (props) => {
         <Divider />
         <Container maxWidth="md">
           {searchResults.map((val, key) => (
-            <ForumCard key={key} />
+            <ForumCard forumId={val} key={key} />
           ))}
         </Container>
       </Container>

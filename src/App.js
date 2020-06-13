@@ -12,6 +12,7 @@ import Search from "./Pages/Search";
 import LoginRegistration from "./Pages/LoginRegistration";
 import Navigation from "./Components/Navigation";
 import NotFound from "./Pages/NotFound";
+import ExpandedForum from "./Components/ExpandedForum";
 
 function App() {
   return (
@@ -20,10 +21,11 @@ function App() {
         <Navigation />
         <div>
           <Switch>
-            <Route path="/search" component={Search}></Route>
-            <Route path="/loginRegister" component={LoginRegistration}></Route>
-            <Route path="/forum" component={Forum} exact></Route>
             <Route path="/" component={Home} exact></Route>
+            <Route exact path={`/forum/:forumId`} component={ExpandedForum} />
+            <Route path="/forum" component={Forum}></Route>
+            <Route path="/loginRegister" component={LoginRegistration}></Route>
+            <Route path="/search" component={Search}></Route>
             <Route path="/not-found" component={NotFound}></Route>
             <Redirect to="/not-found"></Redirect>
           </Switch>

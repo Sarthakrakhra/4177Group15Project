@@ -27,7 +27,7 @@ const Home = () => {
       <Container maxWidth="lg" className={classes.root}>
         <Container maxWidth="md">
           {searchResults.map((val, key) => (
-            <ForumCard key={key} />
+            <ForumCard forumId={val} key={key} />
           ))}
         </Container>
       </Container>
