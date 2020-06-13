@@ -33,3 +33,4 @@ Help for email validation: https://stackoverflow.com/questions/46155/how-to-vali
 Material UI: https://material-ui.com <br />
 ReactJS framework: https://reactjs.org/ <br />
 Create-react-app: https://facebook.github.io/create-react-app/docs/getting-started <br />
+Lorum Ipsum text: https://www.lipsum.com/ <br/>
