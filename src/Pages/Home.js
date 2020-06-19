@@ -1,7 +1,8 @@
 import React from "react";
-import ForumCard from "./../Components/ForumCard";
+import ThreadCard from "../Components/ThreadCard";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { threads } from "./../frontenddata";
 
 const useStyles = makeStyles({
   root: {
@@ -21,13 +22,20 @@ const useStyles = makeStyles({
 
 const Home = () => {
   const classes = useStyles();
-  const searchResults = [1, 2, 3];
+  console.log(threads);
   return (
     <div>
       <Container maxWidth="lg" className={classes.root}>
         <Container maxWidth="md">
-          {searchResults.map((val, key) => (
-            <ForumCard forumId={val} key={key} />
+          {threads.map((thread, key) => (
+            <ThreadCard
+              threadId={thread.threadid}
+              title={thread.threadtitle}
+              text={thread.threadtext}
+              postDate={thread.postdate}
+              userId={thread.userid}
+              key={key}
+            />
           ))}
         </Container>
       </Container>

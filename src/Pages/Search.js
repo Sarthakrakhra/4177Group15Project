@@ -2,8 +2,9 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { Divider } from "@material-ui/core";
-import ForumCard from "./../Components/ForumCard";
+import ThreadCard from "../Components/ThreadCard";
 import { makeStyles } from "@material-ui/core/styles";
+import { threads } from "./../frontenddata";
 
 const useStyles = makeStyles({
   root: {
@@ -45,8 +46,15 @@ const Search = (props) => {
         </Typography>
         <Divider />
         <Container maxWidth="md">
-          {searchResults.map((val, key) => (
-            <ForumCard forumId={val} key={key} />
+          {threads.map((thread, key) => (
+            <ThreadCard
+              forumId={thread.threadid}
+              title={thread.threadtitle}
+              text={thread.threadtext}
+              postDate={thread.postdate}
+              userId={thread.userid}
+              key={key}
+            />
           ))}
         </Container>
       </Container>

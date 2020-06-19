@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Typography, makeStyles } from "@material-ui/core";
-import ForumCard from "../Components/ForumCard";
+import ThreadCard from "../Components/ThreadCard";
+import { threads } from "./../frontenddata";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -8,18 +9,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Forum = (props) => {
+const Thread = (props) => {
   const classes = useStyles();
   const forums = [1, 2, 3, 4, 5];
   return (
     <div>
       <Container maxWidth="md" className={classes.root}>
         <Typography variant="h3" align="left">
-          Forums
+          Threads
         </Typography>
         <Container maxWidth="md">
-          {forums.map((val, key) => (
-            <ForumCard forumId={val} key={key} />
+          {threads.map((thread, key) => (
+            <ThreadCard
+              forumId={thread.threadid}
+              title={thread.threadtitle}
+              text={thread.threadtext}
+              postDate={thread.postdate}
+              userId={thread.userid}
+              key={key}
+            />
           ))}
         </Container>
       </Container>
@@ -27,4 +35,4 @@ const Forum = (props) => {
   );
 };
 
-export default Forum;
+export default Thread;

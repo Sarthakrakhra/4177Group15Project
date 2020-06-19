@@ -6,13 +6,13 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Forum from "./Pages/Forum";
+import Thread from "./Pages/Thread";
 import Home from "./Pages/Home";
 import Search from "./Pages/Search";
 import LoginRegistration from "./Pages/LoginRegistration";
 import Navigation from "./Components/Navigation";
 import NotFound from "./Pages/NotFound";
-import ExpandedForum from "./Components/ExpandedForum";
+import ExpandedThread from "./Components/ExpandedThread";
 
 function App() {
   return (
@@ -22,8 +22,12 @@ function App() {
         <div>
           <Switch>
             <Route path="/" component={Home} exact></Route>
-            <Route exact path={`/forum/:forumId`} component={ExpandedForum} />
-            <Route path="/forum" component={Forum}></Route>
+            <Route
+              exact
+              path={`/thread/:threadId`}
+              component={ExpandedThread}
+            />
+            <Route path="/thread" component={Thread}></Route>
             <Route path="/loginRegister" component={LoginRegistration}></Route>
             <Route path="/search" component={Search}></Route>
             <Route path="/not-found" component={NotFound}></Route>

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Typography, makeStyles, Divider } from "@material-ui/core";
-import cardData from "../CardData";
 import CardComment from "./CardComment";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -9,6 +8,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import SendIcon from "@material-ui/icons/Send";
 import Tooltip from "@material-ui/core/Tooltip";
+import { threads, comments } from "./../frontenddata";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,41 +28,60 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "1em",
   },
 }));
-const ExpandedForum = ({ match }) => {
+const ExpandedThread = ({ match }) => {
   const classes = useStyles();
   const [commentError, setCommentError] = useState(false);
   const [comment, setComment] = useState("");
-  const [userComments, setUserComments] = useState(cardData);
+  const [userComments, setUserComments] = useState([]);
+  const [thread, setThread] = useState({});
+  let date = new Date();
+
   const addToComments = () => {
     if (!comment || comment.trim() === "") setCommentError(true);
     else {
       const newUserComments = [...userComments];
-      newUserComments.push(comment);
+      const today = new Date();
+      newUserComments.push({
+        threadid: thread.threadid,
+        userid: 1,
+        postdate: today,
+        commenttext: comment,
+      });
       setUserComments(newUserComments);
       setCommentError(false);
       setComment("");
     }
   };
 
+  useEffect(() => {
+    setThread(
+      _.find(threads, (t) => {
+        return t.threadid == match.params.threadId;
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    date = new Date(thread.postDate);
+  }, [thread]);
+
+  useEffect(() => {
+    setUserComments(_.filter(comments, (c) => c.threadid === thread.threadid));
+  }, [thread]);
+
   return (
     <Container maxWidth="md" className={classes.root}>
       <Typography align="left" variant="h4">
-        Forum title
+        {thread.threadtitle}
         <Typography className={classes.forumId} variant="caption">
-          id:{match.params.forumId}
+          id:{thread.threadid}
         </Typography>
       </Typography>
       <Typography className={classes.subtitle} align="left" variant="h6">
-        Some subtitle
+        {date.toDateString()}
       </Typography>
       <Typography variant="body1" align="left">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
+        {thread.threadtext}
       </Typography>
       <div className={classes.commentSection}>
         <Typography align="left" variant="h5">
@@ -69,7 +89,14 @@ const ExpandedForum = ({ match }) => {
         </Typography>
         <Divider style={{ marginBottom: "1em" }} />
         {userComments.map((val, key) => {
-          return <CardComment key={key} comment={val} />;
+          return (
+            <CardComment
+              key={key}
+              comment={val.commenttext}
+              postDate={new Date(val.postdate)}
+              userId={val.userid}
+            />
+          );
         })}
       </div>
       <Divider style={{ marginBottom: "1em" }} />
@@ -105,4 +132,4 @@ const ExpandedForum = ({ match }) => {
   );
 };
 
-export default ExpandedForum;
+export default ExpandedThread;
