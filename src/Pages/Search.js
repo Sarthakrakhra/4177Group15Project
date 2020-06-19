@@ -48,7 +48,7 @@ const Search = (props) => {
         <Container maxWidth="md">
           {threads.map((thread, key) => (
             <ThreadCard
-              forumId={thread.threadid}
+              threadId={thread.threadid}
               title={thread.threadtitle}
               text={thread.threadtext}
               postDate={thread.postdate}
