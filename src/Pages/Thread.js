@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Thread = (props) => {
   const classes = useStyles();
-  const forums = [1, 2, 3, 4, 5];
   return (
     <div>
       <Container maxWidth="md" className={classes.root}>
@@ -21,7 +20,8 @@ const Thread = (props) => {
         <Container maxWidth="md">
           {threads.map((thread, key) => (
             <ThreadCard
-              forumId={thread.threadid}
+              threadId={thread.threadid}
+              forumId={thread.forumid}
               title={thread.threadtitle}
               text={thread.threadtext}
               postDate={thread.postdate}

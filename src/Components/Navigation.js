@@ -150,7 +150,7 @@ const Navigation = (props) => {
                 <LibraryBooksIcon />
               </ListItemIcon>
               <ListItemText>
-                <Link to="/forum" className={classes.menuLink}>
+                <Link to="/forums" className={classes.menuLink}>
                   Forums
                 </Link>
               </ListItemText>

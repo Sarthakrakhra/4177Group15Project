@@ -43,7 +43,7 @@ const CardComment = (props) => {
 
   useEffect(() => {
     setUser(_.find(users, (u) => u.userid == props.userId));
-  });
+  }, [props.userId]);
   const datePosted = props.postDate.toDateString();
   return (
     <Card className={classes.commentCard}>

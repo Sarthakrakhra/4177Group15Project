@@ -10,6 +10,7 @@ import SendIcon from "@material-ui/icons/Send";
 import Tooltip from "@material-ui/core/Tooltip";
 import { threads, comments } from "./../frontenddata";
 import _ from "lodash";
+import badWords from "bad-words";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,7 @@ const ExpandedThread = ({ match }) => {
   const [userComments, setUserComments] = useState([]);
   const [thread, setThread] = useState({});
   let date = new Date();
+  const filter = new badWords();
 
   const addToComments = () => {
     if (!comment || comment.trim() === "") setCommentError(true);
@@ -45,7 +47,7 @@ const ExpandedThread = ({ match }) => {
         threadid: thread.threadid,
         userid: 1,
         postdate: today,
-        commenttext: comment,
+        commenttext: filter.clean(comment),
       });
       setUserComments(newUserComments);
       setCommentError(false);
