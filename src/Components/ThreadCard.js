@@ -8,7 +8,7 @@ import cardData from "../CardData";
 import CardComment from "./CardComment";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-import { comments } from "./../frontenddata";
+import { forums, comments } from "./../frontenddata";
 import _ from "lodash";
 
 const useStyles = makeStyles({
@@ -20,6 +20,13 @@ const useStyles = makeStyles({
   },
   subtitle: {
     marginBottom: "1em",
+  },
+  cardTitle: {
+    display: "flex",
+    justifyContent: "space-between",
+    "& a": {
+      color: "inherit",
+    },
   },
 });
 const ExpandButton = withStyles((theme) => ({
@@ -41,17 +48,29 @@ const ThreadCard = (props) => {
   const classes = useStyles();
   const date = new Date(props.postDate);
   const [userComments, setUserComments] = useState([]);
+  const [forumName, setForumName] = useState("");
+
   useEffect(() => {
     setUserComments(_.filter(comments, (c) => c.threadid === props.threadId));
+  }, []);
+
+  useEffect(() => {
+    const tempForum = _.find(forums, (f) => f.forumid === props.forumId);
+    setForumName(tempForum.forumname);
   }, []);
 
   return (
     <div>
       <Card className={classes.root}>
         <CardContent>
-          <Typography className={classes.title} variant="h5" align="left">
-            {props.title}
-          </Typography>
+          <div className={classes.cardTitle}>
+            <Typography className={classes.title} variant="h5" align="left">
+              {props.title}
+            </Typography>
+            <Typography variant="subtitle1" align="right">
+              Forum: <Link to={`/forums/${props.forumId}`}>{forumName}</Link>
+            </Typography>
+          </div>
           <Typography variant="subtitle2" align="left">
             {date.toDateString()}
           </Typography>

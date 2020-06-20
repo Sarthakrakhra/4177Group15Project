@@ -13,6 +13,8 @@ import LoginRegistration from "./Pages/LoginRegistration";
 import Navigation from "./Components/Navigation";
 import NotFound from "./Pages/NotFound";
 import ExpandedThread from "./Components/ExpandedThread";
+import Forums from "./Pages/Forums";
+import ExpandedForum from "./Components/ExpandedForum";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
               component={ExpandedThread}
             />
             <Route path="/thread" component={Thread}></Route>
+            <Route exact path={`/forums/:forumId`} component={ExpandedForum} />
+            <Route path="/forums" component={Forums}></Route>
             <Route path="/loginRegister" component={LoginRegistration}></Route>
             <Route path="/search" component={Search}></Route>
             <Route path="/not-found" component={NotFound}></Route>

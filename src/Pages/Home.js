@@ -22,7 +22,6 @@ const useStyles = makeStyles({
 
 const Home = () => {
   const classes = useStyles();
-  console.log(threads);
   return (
     <div>
       <Container maxWidth="lg" className={classes.root}>
@@ -30,6 +29,7 @@ const Home = () => {
           {threads.map((thread, key) => (
             <ThreadCard
               threadId={thread.threadid}
+              forumId={thread.forumid}
               title={thread.threadtitle}
               text={thread.threadtext}
               postDate={thread.postdate}
