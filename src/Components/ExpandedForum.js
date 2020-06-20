@@ -12,7 +12,7 @@ import { forums, threads as threadData } from "./../frontenddata";
 import _ from "lodash";
 import ThreadCard from "./ThreadCard";
 import SettingsIcon from "@material-ui/icons/Settings";
-import CreateIcon from "@material-ui/icons/Create";
+import AddCommentIcon from "@material-ui/icons/AddComment";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -25,6 +25,9 @@ const useStyles = makeStyles(() => ({
     "& a": {
       color: "inherit",
     },
+  },
+  addThread: {
+    textDecoration: "none",
   },
 }));
 const ExpandedForum = ({ match, history }) => {
@@ -60,13 +63,18 @@ const ExpandedForum = ({ match, history }) => {
       <div>
         <Grid container>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<CreateIcon />}
+            <Link
+              to={`/forums/${forumId}/newThread`}
+              className={classes.addThread}
             >
-              Add a new thread
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<AddCommentIcon />}
+              >
+                Add a new thread
+              </Button>
+            </Link>
           </Grid>
         </Grid>
 

@@ -16,6 +16,7 @@ import ExpandedThread from "./Components/ExpandedThread";
 import Forums from "./Pages/Forums";
 import ExpandedForum from "./Components/ExpandedForum";
 import ManageForum from "./Pages/ManageForum";
+import NewThread from "./Pages/NewThread";
 
 function App() {
   return (
@@ -36,6 +37,11 @@ function App() {
               exact
               path={`/forums/:forumId/manage`}
               component={ManageForum}
+            />
+            <Route
+              exact
+              path={`/forums/:forumId/newThread`}
+              component={NewThread}
             />
             <Route exact path={`/forums/:forumId`} component={ExpandedForum} />
             <Route path="/forums" component={Forums}></Route>

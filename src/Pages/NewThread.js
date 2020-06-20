@@ -1,19 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Divider,
-  Typography,
-  makeStyles,
-  TextField,
-} from "@material-ui/core";
-import { forums } from "./../frontenddata";
-import _ from "lodash";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import SaveIcon from "@material-ui/icons/Save";
+import React, { useState } from "react";
+import { Container, Typography, Divider, makeStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -21,10 +7,20 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Link } from "react-router-dom";
+import AddCommentIcon from "@material-ui/icons/AddComment";
+import TextField from "@material-ui/core/TextField";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 
 const useStyles = makeStyles(() => ({
   root: {
     marginTop: "1em",
+  },
+  pageTitle: {
+    fontWeight: "lighter",
   },
   form: {
     marginTop: "1em",
@@ -35,45 +31,35 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-
-const ManageForum = (props) => {
+const NewThread = ({ match }) => {
   const classes = useStyles();
-  const forumId = props.match.params.forumId;
-  const [forum, setForum] = useState({
-    forumname: "",
-    forumid: "",
-    forumdescription: "",
-    privacy: "",
-  });
+  const forumId = match.params.forumId;
   const [openDialog, setOpenDialog] = useState(false);
+  const [newThread, setNewThread] = useState({
+    threadid: 77,
+    threadtitle: "",
+    threadtext: "",
+    visibility: "",
+    postdate: "",
+    forumid: forumId,
+    userid: 4,
+  });
 
-  useEffect(() => {
-    setForum(_.find(forums, (f) => f.forumid == forumId));
-  }, [forumId]);
-
-  const handleForumNameChange = (event) => {
-    const newForumName = event.target.value;
-    const newForumObj = { ...forum };
-    newForumObj.forumname = newForumName;
-    setForum(newForumObj);
+  const handleThreadTitleChange = (event) => {
+    setNewThread({ ...newThread, threadtitle: event.target.value });
   };
 
-  const handleForumDescChange = (event) => {
-    const newForumDesc = event.target.value;
-    const newForumObj = { ...forum };
-    newForumObj.forumdescription = newForumDesc;
-    setForum(newForumObj);
+  const handleThreadTextChange = (event) => {
+    setNewThread({ ...newThread, threadtext: event.target.value });
   };
 
-  const handleForumVisibilityChange = (event) => {
-    const newForumVisibility = event.target.value;
-    const newForumObj = { ...forum };
-    newForumObj.privacy = newForumVisibility;
-    setForum(newForumObj);
+  const handleThreadVisibilityChange = (event) => {
+    setNewThread({ ...newThread, visibility: event.target.value });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setNewThread({ ...newThread, postdate: new Date().toString() });
     handleDialogOpen();
   };
 
@@ -93,10 +79,10 @@ const ManageForum = (props) => {
         aria-labelledby="save-settings-title"
         aria-describedby="save-forum-settings"
       >
-        <DialogTitle>{"Confirm Forum settings change"}</DialogTitle>
+        <DialogTitle>{"Confirm new thread"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You have changed your forum settings, do you wish to continue?
+            You are creating a new thread, do you wish to continue?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -110,34 +96,34 @@ const ManageForum = (props) => {
           </Link>
         </DialogActions>
       </Dialog>
-      <Typography variant="h3" align="left">
-        Manage Forum
+      <Typography className={classes.pageTitle} align="left" variant="h3">
+        Create new thread
       </Typography>
       <Divider />
       <Container maxWidth="lg">
         <form onSubmit={handleSubmit} className={classes.form}>
           <TextField
             variant="outlined"
-            value={forum.forumname}
-            onChange={(e) => handleForumNameChange(e)}
-            label="Forum name"
+            value={newThread.threadtitle}
+            onChange={handleThreadTitleChange}
+            label="Forum title"
           ></TextField>
           <TextField
             multiline
             variant="outlined"
-            onChange={(e) => handleForumDescChange(e)}
-            value={forum.forumdescription}
-            label="Forum description"
+            onChange={handleThreadTextChange}
+            value={newThread.threadtext}
+            label="Thread text"
           ></TextField>
           <FormControl component="fieldset">
             <FormLabel align="left" component="legend">
-              Forum visibility
+              Thread visibility
             </FormLabel>
             <RadioGroup
               aria-label="forum-visibility"
               name="forumVisibility"
-              value={forum.privacy}
-              onChange={handleForumVisibilityChange}
+              value={newThread.visibility}
+              onChange={handleThreadVisibilityChange}
             >
               <FormControlLabel
                 value="public"
@@ -156,9 +142,9 @@ const ManageForum = (props) => {
             variant="contained"
             color="primary"
             size="large"
-            endIcon={<SaveIcon />}
+            endIcon={<AddCommentIcon />}
           >
-            Save Settings
+            Create thread
           </Button>
         </form>
       </Container>
@@ -166,4 +152,4 @@ const ManageForum = (props) => {
   );
 };
 
-export default ManageForum;
+export default NewThread;
