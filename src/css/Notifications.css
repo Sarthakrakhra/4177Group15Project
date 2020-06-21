@@ -1,0 +1,11 @@
+.TableHeader {
+    font-weight: bold !important;
+}
+
+.Table {
+    margin-top: 20px;
+}
+
+.acceptBtn{
+    margin-right: 10px !important;
+}
