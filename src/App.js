@@ -17,6 +17,9 @@ import Forums from "./Pages/Forums";
 import ExpandedForum from "./Components/ExpandedForum";
 import ManageForum from "./Pages/ManageForum";
 import NewThread from "./Pages/NewThread";
+import Messaging from "./Pages/Messaging";
+import ActualMessaging from "./Pages/ActualMessaging";
+import Notifications from "./Pages/Notifications";
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
             <Route path="/loginRegister" component={LoginRegistration}></Route>
             <Route path="/search" component={Search}></Route>
             <Route path="/not-found" component={NotFound}></Route>
+            <Route path="/messaging" component={Messaging}></Route>
+            <Route path="/actualMessaging" component={ActualMessaging}></Route>
+            <Route path="/Notifications" component={Notifications}></Route>
             <Redirect to="/not-found"></Redirect>
           </Switch>
         </div>
