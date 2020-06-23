@@ -20,12 +20,16 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ChatIcon from "@material-ui/icons/Chat";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     display: "flex",
     flexGrow: 1,
   },
   menuButton: {
+    display: "flex",
     [theme.breakpoints.up("sm")]: {
       display: "none",
       marginRight: theme.spacing(2),
@@ -92,10 +96,11 @@ const Navigation = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const searchInputRef = useRef();
   const ENTER_KEY = 13;
   const menuVisibilityStyle = {
-    display: isLoggedIn ? "flex" : "none",
+    display: isLoggedIn || !sessionStorage.getItem("user") ? "flex" : "none",
   };
 
   useEffect(() => {
@@ -125,6 +130,7 @@ const Navigation = (props) => {
   const logoutUser = () => {
     sessionStorage.removeItem("user");
     setIsLoggedIn(false);
+    setOpenSnackBar(true);
   };
 
   const keyPress = (event) => {
@@ -132,6 +138,44 @@ const Navigation = (props) => {
       handleSearch();
     }
   };
+
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  };
+
+  let messagingListItem = null;
+  let notificationsListItem = null;
+
+  if (isLoggedIn) {
+    messagingListItem = (
+      <ListItem button>
+        <ListItemIcon>
+          <ChatIcon />
+        </ListItemIcon>
+        <ListItemText>
+          <Link to="/messaging" className={classes.menuLink}>
+            Messaging
+          </Link>
+        </ListItemText>
+      </ListItem>
+    );
+    notificationsListItem = (
+      <ListItem button>
+        <ListItemIcon>
+          <NotificationsIcon />
+        </ListItemIcon>
+        <ListItemText>
+          <Link to="/Notifications" className={classes.menuLink}>
+            Notifications
+          </Link>
+        </ListItemText>
+      </ListItem>
+    );
+  }
 
   return (
     <div className={classes.grow}>
@@ -152,6 +196,18 @@ const Navigation = (props) => {
                 </Link>
               </ListItemText>
             </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/forums" className={classes.menuLink}>
+                  Forums
+                </Link>
+              </ListItemText>
+            </ListItem>
+            {messagingListItem}
+            {notificationsListItem}
             <ListItem
               button
               onClick={() => (isLoggedIn ? logoutUser() : () => {})}
@@ -167,36 +223,6 @@ const Navigation = (props) => {
                     Log-in/Register
                   </Link>
                 )}
-              </ListItemText>
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <LibraryBooksIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Link to="/forums" className={classes.menuLink}>
-                  Forums
-                </Link>
-              </ListItemText>
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <ChatIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Link to="/messaging" className={classes.menuLink}>
-                  Messaging
-                </Link>
-              </ListItemText>
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <NotificationsIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Link to="/Notifications" className={classes.menuLink}>
-                  Notifications
-                </Link>
               </ListItemText>
             </ListItem>
           </List>
@@ -256,6 +282,20 @@ const Navigation = (props) => {
           </div>
         </Toolbar>
       </AppBar>
+      <Snackbar
+        open={openSnackBar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackBar}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleCloseSnackBar}
+          severity="success"
+        >
+          You are now logged out!
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 };
