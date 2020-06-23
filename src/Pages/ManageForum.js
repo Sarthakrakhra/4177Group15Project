@@ -14,6 +14,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import SaveIcon from "@material-ui/icons/Save";
+import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -44,11 +45,25 @@ const ManageForum = (props) => {
     forumid: "",
     forumdescription: "",
     privacy: "",
+    invite: "",
   });
+
+  const [errors, setErrors] = useState({ 
+    forumname: false,
+    forumdescription: false,
+    privacy: false,
+   });
+
+   const [errorsInvite, setErrorsInvite] = useState({ 
+    foruminvite: false,
+   });
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [openInviteDialog, setOpenInviteDialog] = useState(false);
 
   useEffect(() => {
-    setForum(_.find(forums, (f) => f.forumid == forumId));
+    const foundForum = _.find(forums, (f) => f.forumid == forumId);
+    setForum({...foundForum, invite: ""});
   }, [forumId]);
 
   const handleForumNameChange = (event) => {
@@ -57,6 +72,66 @@ const ManageForum = (props) => {
     newForumObj.forumname = newForumName;
     setForum(newForumObj);
   };
+
+  useEffect(() => {
+    if(forum.forumname.trim() === ""){
+      setErrors({
+        ...errors, 
+        forumname: true
+      })
+    }
+    else{
+      setErrors({
+        ...errors, 
+        forumname: false
+      })
+    }
+  }, [forum.forumname]);
+
+  useEffect(() => {
+    if(forum.forumdescription.trim() === ""){
+      setErrors({
+        ...errors, 
+        forumdescription: true
+      })
+    }
+    else{
+      setErrors({
+        ...errors, 
+        forumdescription: false
+      })
+    }
+  }, [forum.forumdescription]);
+
+  useEffect(() => {
+    if(forum.privacy === ""){
+      setErrors({
+        ...errors, 
+        privacy: true
+      })
+    }
+    else{
+      setErrors({
+        ...errors, 
+        privacy: false
+      })
+    }
+  }, [forum.privacy]);
+
+  useEffect(() => {
+    if(forum.invite.trim() === ""){
+      setErrorsInvite({
+        foruminvite: true
+      })
+    }
+    else{
+      setErrorsInvite({
+        foruminvite: false
+      })
+    }
+
+    console.log(forum);
+  }, [forum.invite]);
 
   const handleForumDescChange = (event) => {
     const newForumDesc = event.target.value;
@@ -72,9 +147,11 @@ const ManageForum = (props) => {
     setForum(newForumObj);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    handleDialogOpen();
+    if(await checkAllForumErrors()){
+      handleDialogOpen();
+    }
   };
 
   const handleCancel = () => {
@@ -83,6 +160,42 @@ const ManageForum = (props) => {
 
   const handleDialogOpen = () => {
     setOpenDialog(true);
+  };
+
+  const handleInviteSubmit = async (event) => {
+    event.preventDefault();
+    if(await checkAllInviteErrors()){
+      handleOk(); 
+    }
+  };
+
+  const checkAllInviteErrors = async () => {
+    for(const errorIndex in errorsInvite){
+      if(errorsInvite[errorIndex]){
+        return false
+      }
+    }
+    return true;
+  }
+
+  const checkAllForumErrors = async () => {
+    for(const errorIndex in errors){
+      if(errors[errorIndex]){
+        return false
+      }
+    }
+    return true;
+  }
+
+  const handleOk = () => {
+    setOpenInviteDialog(true);
+  };
+
+  const handleForumInviteChange = (event) => {
+    const newForumInvite = event.target.value;
+    const newForumObj = { ...forum };
+    newForumObj.invite = newForumInvite;
+    setForum(newForumObj);
   };
 
   return (
@@ -110,6 +223,28 @@ const ManageForum = (props) => {
           </Link>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openInviteDialog}
+        onClose={handleOk}
+        aria-labelledby="save-settings-title"
+        aria-describedby="save-forum-settings"
+      >
+        <DialogTitle>{"User Invites"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You have sent invite to the specified users.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Link to={`/forums/${forumId}`} style={{ textDecoration: "none" }}>
+            <Button color="primary" autoFocus>
+              Ok
+            </Button>
+          </Link>
+        </DialogActions>
+      </Dialog>
+
       <Typography variant="h3" align="left">
         Manage Forum
       </Typography>
@@ -121,6 +256,7 @@ const ManageForum = (props) => {
             value={forum.forumname}
             onChange={(e) => handleForumNameChange(e)}
             label="Forum name"
+            error={errors.forumname}
           ></TextField>
           <TextField
             multiline
@@ -128,8 +264,9 @@ const ManageForum = (props) => {
             onChange={(e) => handleForumDescChange(e)}
             value={forum.forumdescription}
             label="Forum description"
+            error={errors.forumdescription}
           ></TextField>
-          <FormControl component="fieldset">
+          <FormControl component="fieldset" error={errors.privacy}>
             <FormLabel align="left" component="legend">
               Forum visibility
             </FormLabel>
@@ -159,6 +296,25 @@ const ManageForum = (props) => {
             endIcon={<SaveIcon />}
           >
             Save Settings
+          </Button>
+        </form>
+        <br />
+        <form onSubmit={handleInviteSubmit} className={classes.form}>
+        <TextField
+            multiline
+            variant="outlined"
+            onChange={(e) => handleForumInviteChange(e)}
+            label="Enter usernames seperated by a comma"
+            error={errorsInvite.foruminvite}>
+            </TextField>
+            <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            endIcon={<AddCircleOutlineRoundedIcon />}
+          >
+            Send Invite(s)
           </Button>
         </form>
       </Container>
