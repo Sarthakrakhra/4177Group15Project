@@ -35,7 +35,6 @@ function App() {
               component={ExpandedThread}
             />
             <Route path="/thread" component={Thread}></Route>
-            {/* <Route path={`/manage/:forumId`} component={ManageForum} /> */}
             <Route
               exact
               path={`/forums/:forumId/manage`}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -18,13 +18,14 @@ import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
-
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import ChatIcon from "@material-ui/icons/Chat";
 const useStyles = makeStyles((theme) => ({
   grow: {
+    display: "flex",
     flexGrow: 1,
   },
   menuButton: {
-    display: "block",
     [theme.breakpoints.up("sm")]: {
       display: "none",
       marginRight: theme.spacing(2),
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "pointer",
     },
+    lineHeight: "2",
     [theme.breakpoints.up("sm")]: {
       display: "flex",
       flexGrow: 1,
@@ -89,8 +91,18 @@ const Navigation = (props) => {
   const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const searchInputRef = useRef();
   const ENTER_KEY = 13;
+  const menuVisibilityStyle = {
+    display: isLoggedIn ? "flex" : "none",
+  };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("user")) {
+      setIsLoggedIn(true);
+    }
+  }, [sessionStorage.getItem("user")]);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -108,6 +120,11 @@ const Navigation = (props) => {
 
   const goToLogin = () => {
     props.history.push("/loginRegister");
+  };
+
+  const logoutUser = () => {
+    sessionStorage.removeItem("user");
+    setIsLoggedIn(false);
   };
 
   const keyPress = (event) => {
@@ -135,14 +152,21 @@ const Navigation = (props) => {
                 </Link>
               </ListItemText>
             </ListItem>
-            <ListItem button>
+            <ListItem
+              button
+              onClick={() => (isLoggedIn ? logoutUser() : () => {})}
+            >
               <ListItemIcon>
                 <VerifiedUserIcon />
               </ListItemIcon>
               <ListItemText>
-                <Link to="/loginRegister" className={classes.menuLink}>
-                  Log-in/Register
-                </Link>
+                {isLoggedIn ? (
+                  "Logout"
+                ) : (
+                  <Link to="/loginRegister" className={classes.menuLink}>
+                    Log-in/Register
+                  </Link>
+                )}
               </ListItemText>
             </ListItem>
             <ListItem button>
@@ -155,6 +179,26 @@ const Navigation = (props) => {
                 </Link>
               </ListItemText>
             </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <ChatIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/messaging" className={classes.menuLink}>
+                  Messaging
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <NotificationsIcon />
+              </ListItemIcon>
+              <ListItemText>
+                <Link to="/Notifications" className={classes.menuLink}>
+                  Notifications
+                </Link>
+              </ListItemText>
+            </ListItem>
           </List>
         </div>
       </Drawer>
@@ -164,6 +208,7 @@ const Navigation = (props) => {
             <IconButton
               edge="start"
               className={classes.menuButton}
+              style={menuVisibilityStyle}
               color="inherit"
               aria-label="open drawer"
               onClick={() => setDrawerOpen(true)}
@@ -202,8 +247,11 @@ const Navigation = (props) => {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <Button color="inherit" onClick={() => goToLogin()}>
-              Log-in/Register
+            <Button
+              color="inherit"
+              onClick={() => (isLoggedIn ? logoutUser() : goToLogin())}
+            >
+              {isLoggedIn ? "Logout" : "Log-in/Register"}
             </Button>
           </div>
         </Toolbar>

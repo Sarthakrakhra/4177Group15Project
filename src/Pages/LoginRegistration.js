@@ -164,6 +164,11 @@ class LoginRegistration extends Component {
       this.setState({
         dialogOpen: true,
       });
+
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ username: this.state.username })
+      );
     }
   }
 
