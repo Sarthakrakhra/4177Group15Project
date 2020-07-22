@@ -55,7 +55,7 @@ const CardComment = (props) => {
           <Typography align="left" variant="h6">
             {user.username}
             <Typography
-              align="left"
+              align="le ft"
               variant="overline"
               className={classes.date}
             >
