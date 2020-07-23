@@ -43,6 +43,9 @@ const initialState = {
   showPassword: false,
   registrationState: false,
   dialogOpen: false,
+  dialogText: "",
+  invalidCredentials: false,
+  disableAuthButton: false,
 };
 
 class LoginRegistration extends Component {
@@ -60,17 +63,6 @@ class LoginRegistration extends Component {
     );
     this.changeForm = this.changeForm.bind(this);
     this.handleUserRoleCange = this.handleUserRoleCange.bind(this);
-  }
-
-  componentDidMount() {
-    axios
-      .get("https://group15-4177-backend.herokuapp.com/user")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   handlePasswordChange(event) {
@@ -158,16 +150,15 @@ class LoginRegistration extends Component {
   async handleAuthentication(event) {
     event.preventDefault();
 
+    this.setState({ disableAuthButton: true });
     await this.checkPasswordError();
 
     if (this.state.registrationState) {
-      if (this.state.email.length === 0) {
+      if (this.state.email.length === 0)
         await this.validateEmail(this.state.email);
-      }
 
-      if (this.state.confirmPassword.length === 0) {
+      if (this.state.confirmPassword.length === 0)
         await this.validateConfirmPassword(this.state.confirmPassword);
-      }
 
       if (!this.state.userRole) await this.checkUserRoleError();
     }
@@ -183,6 +174,9 @@ class LoginRegistration extends Component {
             if (response.data.loggedIn) {
               this.setState({
                 dialogOpen: true,
+                dialogText: `Welcome ${this.state.username}. You are now logged in!`,
+                invalidCredentials: false,
+                disableAuthButton: false,
               });
               sessionStorage.setItem(
                 "user",
@@ -191,9 +185,51 @@ class LoginRegistration extends Component {
             }
           })
           .catch((error) => {
-            console.error(error);
+            this.setState({
+              dialogOpen: true,
+              dialogText: "Invalid credentials. Please try again!",
+              invalidCredentials: true,
+              disableAuthButton: false,
+            });
+          });
+      } else {
+        axios
+          .post("https://group15-4177-backend.herokuapp.com/user/register", {
+            username: this.state.username,
+            email: this.state.email,
+            password: this.state.password,
+            info: `Hi I'm ${this.state.username}`,
+          })
+          .then((result) => {
+            this.setState({
+              dialogOpen: true,
+              dialogText: `Welcome ${this.state.username}. You are now registered and logged in!`,
+              invalidCredentials: false,
+              disableAuthButton: false,
+            });
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify({ username: this.state.username })
+            );
+          })
+          .catch((error) => {
+            const tempErrorMsg = error.response.data.message;
+            let dialogErrorMessage = "";
+            if (tempErrorMsg.includes("duplicate")) {
+              dialogErrorMessage =
+                "Please make sure your username and email are not already registered";
+            } else {
+              dialogErrorMessage = tempErrorMsg;
+            }
+            this.setState({
+              dialogOpen: true,
+              dialogText: dialogErrorMessage,
+              invalidCredentials: true,
+              disableAuthButton: false,
+            });
           });
       }
+      this.setState({ disableAuthButton: false });
     }
   }
 
@@ -401,18 +437,20 @@ class LoginRegistration extends Component {
           aria-describedby="alert-dialog-redirect-to-home"
         >
           <DialogContent>
-            <DialogContentText>
-              {this.state.registrationState
-                ? `Welcome ${this.state.username}. You are now registerd and logged in! `
-                : `Welcome ${this.state.username}. You are now logged in!`}
-            </DialogContentText>
+            <DialogContentText>{this.state.dialogText}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Link to="/">
-              <Button color="primary" autoFocus>
-                Back to home page
+            {this.state.invalidCredentials ? (
+              <Button onClick={() => this.setState({ dialogOpen: false })}>
+                Close
               </Button>
-            </Link>
+            ) : (
+              <Link to="/">
+                <Button color="primary" autoFocus>
+                  Back to home page
+                </Button>
+              </Link>
+            )}
           </DialogActions>
         </Dialog>
         <Container maxWidth="sm" style={{ marginTop: "1em" }}>
@@ -471,6 +509,7 @@ class LoginRegistration extends Component {
                 variant="contained"
                 color="primary"
                 onClick={this.handleAuthentication}
+                disabled={this.state.disableAuthButton}
               >
                 <Input
                   type="submit"
