@@ -23,6 +23,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import axios from "axios";
 
 const initialState = {
   username: "",
@@ -59,6 +60,17 @@ class LoginRegistration extends Component {
     );
     this.changeForm = this.changeForm.bind(this);
     this.handleUserRoleCange = this.handleUserRoleCange.bind(this);
+  }
+
+  componentDidMount() {
+    axios
+      .get("https://group15-4177-backend.herokuapp.com/user")
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   handlePasswordChange(event) {
@@ -161,14 +173,27 @@ class LoginRegistration extends Component {
     }
 
     if (await this.checkAllErrors()) {
-      this.setState({
-        dialogOpen: true,
-      });
-
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({ username: this.state.username })
-      );
+      if (!this.state.registrationState) {
+        axios
+          .post("https://group15-4177-backend.herokuapp.com/user/login", {
+            username: this.state.username,
+            password: this.state.password,
+          })
+          .then((response) => {
+            if (response.data.loggedIn) {
+              this.setState({
+                dialogOpen: true,
+              });
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({ username: this.state.username })
+              );
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     }
   }
 
