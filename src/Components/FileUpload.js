@@ -1,4 +1,4 @@
-//Author: Sally Keating
+//Author: Sally Keating | B00739692
 
 import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
@@ -16,9 +16,6 @@ export default class FileUpload extends Component {
             open: false
         }
     }
-    componentWillMount(){
-        // this.callAPI();
-    }
 
     handleSave(){
 
@@ -30,10 +27,10 @@ export default class FileUpload extends Component {
     render() {
         return (
             <div>
-    <IconButton
-        aria-label="upload-file"
-        // onClick={this.handleOpen.bind(this)}
-    >
+            <IconButton
+                aria-label="upload-file"
+                // onClick={this.handleOpen.bind(this)}
+            >
         <PublishIcon/>
     </IconButton>
     <DropzoneDialog

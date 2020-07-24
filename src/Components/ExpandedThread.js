@@ -130,6 +130,7 @@ const ExpandedThread = ({ match }) => {
             </InputAdornment>
           }
         />
+        {/*Implementing Sally's File Upload Feature*/}
         <FileUpload />
       </FormControl>
     </Container>
