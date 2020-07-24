@@ -166,7 +166,7 @@ class LoginRegistration extends Component {
     if (await this.checkAllErrors()) {
       if (!this.state.registrationState) {
         axios
-          .post("https://group15-4177-backend.herokuapp.com/user/login", {
+          .post("https://a4-4177-g15.herokuapp.com/user/login", {
             username: this.state.username,
             password: this.state.password,
           })
@@ -194,7 +194,7 @@ class LoginRegistration extends Component {
           });
       } else {
         axios
-          .post("https://group15-4177-backend.herokuapp.com/user/register", {
+          .post("https://a4-4177-g15.herokuapp.com/user/register", {
             username: this.state.username,
             email: this.state.email,
             password: this.state.password,
