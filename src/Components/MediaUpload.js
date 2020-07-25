@@ -2,45 +2,59 @@
 
 import IconButton from "@material-ui/core/IconButton";
 import PublishIcon from "@material-ui/icons/Publish";
-import React, {Component, useState} from "react";
+import React, {useState} from "react";
 import axios from 'axios';
 
+//Creates constant which can be used in other classes. (reduces redundant code)
 const MediaUpload =() => {
     const [uploadedMedia, setMedia] = useState();
-    const [mediaTitle, setMediaTitle] = useState();
-    const[confirm, setConf] = useState({});
+    const [confirmationMessage, setCM] = useState();
+    const [confirm, setConfirmed] = useState({});
 
+    //called when a file is uploaded
     const onChange = e => {
         setMedia(e.target.file);
     }
 
-    const onPush = async e => {
+    //Called when form is submitted
+    const onPost = async e => {
         e.preventDefault();
-        const uploaded = new FormData;
+        var uploaded = new FormData;
         uploaded.append('file', uploadedMedia);
 
+        console.log(uploadedMedia);
+
         try {
+            //posts the uploaded media
             const send = await axios.post('/upload', uploaded, {
                 headers:{
                     'Content-Type': 'multipart'
                 }
             });
+
             const {mediaTitle, filePath} = send.data;
-            setConf({mediaTitle, filePath});
+            setConfirmed({mediaTitle, filePath});
+            setCM('File was successfully uploaded.');
+            console.log('it worked! File is uploaded');
 
         }catch(error){
-            console.log('error occured in file upload' + error);
+            console.log('error occured in file upload ' + error);
         }
     }
 
     return(
         <div>
-            <form>
+            <form onSubmit={onPost}>
                 <input type='file' className='custom-file-input' id='uploadedFile' onChange={onChange}/>
                 <IconButton type='submit'><PublishIcon/></IconButton>
             </form>
+            {confirmationMessage ? <div>
+                <p>{confirmationMessage}</p>
+            </div>
+            : null
+            }
         </div>
     );
 };
 
-    export default MediaUpload;
+export default MediaUpload;

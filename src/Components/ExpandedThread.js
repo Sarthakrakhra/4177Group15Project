@@ -11,7 +11,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { threads, comments } from "./../frontenddata";
 import _ from "lodash";
 import badWords from "bad-words";
-import FileUpload from "./FileUpload";
+import FileUpload from "./MediaUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
