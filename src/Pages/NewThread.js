@@ -14,8 +14,74 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import axios from 'axios';
 
-const useStyles = makeStyles(() => ({
+class NewThread extends React.Component {
+	
+	async componentDidMount() {
+		
+	}
+	
+	async handleSubmit() {
+		var forumid = document.getElementById("threadid").innerHTML;
+		var threadtitle = document.getElementById("newthreadtitle").value;
+		var threadtext = document.getElementById("newthreadtext").value;
+		if (threadtitle.length < 1 || threadtext.length < 1) {
+			alert("Please enter both a title and description for the thread");
+			return;
+		}
+		try {
+			var payload = {"threadforum":forumid,"threadtitle":threadtitle,"threadtext":threadtext};
+			var postresponse = await axios.post("https://a4-4177-g15.herokuapp.com/thread", payload);
+			if (postresponse.status != 201) {
+				var errormessage = postresponse.data.message;
+				alert(errormessage);
+				return;
+			}	else {
+				var successnotice = postresponse.data.message;
+				alert(successnotice);
+				document.getElementById("newthreadtitle").value = "";
+				document.getElementById("newthreadtext").value = "";
+				return;
+			}
+		} catch (err) {
+			var errormessage = err.response.data.message;
+			alert(errormessage);
+			return;
+		}
+	}
+
+	render() {
+		const classes = {
+			root: {
+				marginTop: "1em",
+			},
+			pageTitle: {
+				fontWeight: "lighter",
+			},
+			form: {
+				marginTop: "1em",
+				display: "flex",
+				flexDirection: "column",
+				"& > .MuiFormControl-root, .MuiButton-root": {
+				  marginTop: "1em",
+				},
+			},
+		};					
+		const forumId = this.props.match.params.forumId;
+		return (
+		  <div id="newthreadcontainer">
+		  	<div id="newthreadheader">Create a new thread</div>
+		  	<div id="threadid">{forumId}</div>
+		  	<textarea id="newthreadtitle" placeholder="Enter Thread Title" />
+		  	<textarea id="newthreadtext" placeholder="Enter Thread Text"/>
+		  	<button id="newthreadsubmit" onClick={this.handleSubmit}>Post Thread</button>
+		  </div>
+		);
+	}
+}
+
+/*const useStyles = makeStyles(() => ({
   root: {
     marginTop: "1em",
   },
@@ -150,6 +216,6 @@ const NewThread = ({ match }) => {
       </Container>
     </Container>
   );
-};
+};*/
 
 export default NewThread;

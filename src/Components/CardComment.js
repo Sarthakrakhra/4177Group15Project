@@ -45,6 +45,7 @@ const CardComment = (props) => {
     setUser(_.find(users, (u) => u.userid == props.userId));
   }, [props.userId]);
   const datePosted = props.postDate.toDateString();
+  const username = props.username;
   return (
     <Card className={classes.commentCard}>
       <CardContent className={classes.comments}>
@@ -53,7 +54,7 @@ const CardComment = (props) => {
         </div>
         <div className={classes.commentDiv}>
           <Typography align="left" variant="h6">
-            {user.username}
+            {username}
             <Typography
               align="le ft"
               variant="overline"

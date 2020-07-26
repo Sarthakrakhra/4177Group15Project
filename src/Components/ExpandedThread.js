@@ -8,12 +8,156 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import SendIcon from "@material-ui/icons/Send";
 import Tooltip from "@material-ui/core/Tooltip";
-import { threads, comments } from "./../frontenddata";
 import _ from "lodash";
 import badWords from "bad-words";
 import FileUpload from "./MediaUpload";
+import axios from 'axios';
 
-const useStyles = makeStyles((theme) => ({
+class ExpandedThread extends React.Component {
+	
+	async componentDidMount() {
+		const threadId = this.props.match.params.threadId;
+		try {
+			var thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+			if (thread.status != 200) {
+				var errormessage = thread.data.message;
+				this.setState({ errormessage });
+			}	else {
+				var threaddata = thread.data;
+				this.setState({ threaddata });
+			}
+		} catch (err) {
+			var errormessage = err.response.data.message;
+			//var errormessage = err.message;
+			this.setState({ errormessage });
+		}
+	}
+	
+	async addComment() {
+		var threadId = document.getElementById("threadid").innerHTML;
+		var commenttext = document.getElementById("submit-comment-text").value;
+		if (commenttext.length < 1) {
+			alert("Please enter a comment");
+			return;
+		}
+		try {
+			var payload = {"commenttext":commenttext};
+			var postresponse = await axios.post("https://a4-4177-g15.herokuapp.com/thread/"+threadId, payload);
+			if (postresponse.status != 201) {
+				var errormessage = postresponse.data.message;
+				alert(errormessage);
+				return;
+			}	else {
+				var successnotice = postresponse.data.message;
+				alert(successnotice);
+				document.getElementById("submit-comment-text").value = "";
+				return;
+			}
+		} catch (err) {
+			var errormessage = err.response.data.message;
+			alert(errormessage);
+			return;
+		}
+	}
+
+	render() {
+		const classes = {
+			root: {
+				marginTop: "1em",
+			},
+			subtitle: {
+				fontWeight: "lighter",
+			},
+			commentSection: {
+				marginTop: "1em",
+			},
+			forumId: {
+				marginLeft: "1%",
+			},
+			enterComment: {
+				marginBottom: "1em",
+			},
+		};
+		
+		if (this.state) {
+			const { threaddata } = this.state;
+			const { errormessage } = this.state;
+			if (errormessage) {
+				return (<div>{errormessage}</div>);
+			}
+			if (threaddata) {
+				var thread = threaddata.thread;
+				var comments = threaddata.comments;
+				return (
+					<Container maxWidth="md" className={classes.root}>
+						<Typography align="left" variant="h4">
+						  {thread.threadtitle}
+						  <Typography className={classes.forumId} variant="caption">
+						    id:{thread.threadid}
+						  </Typography>
+						  <div id="threadid">{thread.threadid}</div>
+						</Typography>
+						<Typography className={classes.subtitle} align="left" variant="h6">
+						  {new Date(thread.threaddate).toDateString()}
+						</Typography>
+						<Typography variant="body1" align="left">
+						  {thread.threadtext}
+						</Typography>
+						<div className={classes.commentSection}>
+						  <Typography align="left" variant="h5">
+						    Comments
+						  </Typography>
+						  <Divider style={{ marginBottom: "1em" }} />
+						  {comments.map((val, key) => {
+						    return (
+						      <CardComment
+						        key={key}
+						        comment={val.commenttext}
+						        postDate={new Date(val.commentdate)}
+						        userId={val.commentuser}
+						        username={val.username}
+						      />
+						    );
+						  })}
+						</div>
+						<Divider style={{ marginBottom: "1em" }} />
+						<FormControl
+						  className={classes.enterComment}
+						  variant="outlined"
+						  fullWidth
+						>
+						  <InputLabel htmlFor="outlined-adornment-comment">
+						    Enter a comment
+						  </InputLabel>
+						  <OutlinedInput
+						    labelWidth={125}
+						    multiline
+						    id="submit-comment-text"
+						    endAdornment={
+						      <InputAdornment position="end">
+						        <Tooltip title="Add comment">
+						          <IconButton
+						            aria-label="add-comment"
+						            onClick={this.addComment}
+						          >
+						            <SendIcon />
+						          </IconButton>
+						        </Tooltip>
+						      </InputAdornment>
+						    }
+						  />
+						  {/*Implementing Sally's File Upload Feature*/}
+						  <FileUpload />
+						</FormControl>
+					</Container>
+				);
+			}
+		}
+		return (<div>Loading...</div>);
+	}
+}
+
+/*const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: "1em",
   },
@@ -129,12 +273,12 @@ const ExpandedThread = ({ match }) => {
               </Tooltip>
             </InputAdornment>
           }
-        />
-        {/*Implementing Sally's File Upload Feature*/}
+        />*/
+        {/*Implementing Sally's File Upload Feature*/}/*
         <FileUpload />
       </FormControl>
     </Container>
   );
-};
+};*/
 
 export default ExpandedThread;

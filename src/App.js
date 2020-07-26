@@ -6,7 +6,6 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Thread from "./Pages/Thread";
 import Home from "./Pages/Home";
 import Search from "./Pages/Search";
 import LoginRegistration from "./Pages/LoginRegistration";
@@ -34,7 +33,6 @@ function App() {
               path={`/thread/:threadId`}
               component={ExpandedThread}
             />
-            <Route path="/thread" component={Thread}></Route>
             <Route
               exact
               path={`/forums/:forumId/manage`}

@@ -36,3 +36,41 @@
     transform: rotate(360deg);
   }
 }
+
+#threadid {
+	display:none;
+}
+
+#newthreadcontainer {
+	display:relative;
+	text-align:center;
+	font-size:2rem;
+}
+
+#newthreadheader {
+	display:block;
+	margin-top:1rem;
+	margin-bottom:1rem;
+}
+
+#newthreadtitle {
+	display:block;
+	margin: 0 auto;
+	margin-bottom:1rem;
+	width:80%;
+	max-width:20rem;
+}
+
+#newthreadtext {
+	display:block;
+	margin: 0 auto;
+	margin-bottom:1rem;
+	width:80%;
+	max-width:20rem;
+}
+
+#newthreadsubmit {
+	display:block;
+	margin: 0 auto;
+	font-size:1.5rem;
+}
