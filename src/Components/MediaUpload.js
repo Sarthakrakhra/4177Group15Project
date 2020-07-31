@@ -26,7 +26,7 @@ const MediaUpload =() => {
 
         try {
             //posts the uploaded media
-            const send = await axios.post('/upload', uploaded, {
+            const send = await axios.post('https://a4-4177-g15.herokuapp.com/upload', uploaded, {
                 headers:{
                     'Content-Type': 'multipart'
                 }
