@@ -229,8 +229,8 @@ class LoginRegistration extends Component {
             });
           });
       }
-      this.setState({ disableAuthButton: false });
     }
+    this.setState({ disableAuthButton: false });
   }
 
   async checkPasswordError() {
