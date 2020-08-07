@@ -182,6 +182,10 @@ class LoginRegistration extends Component {
                 "user",
                 JSON.stringify({ username: this.state.username })
               );
+              sessionStorage.setItem(
+                "cookie",
+                response.data.cookie
+              );
             }
           })
           .catch((error) => {
@@ -210,6 +214,10 @@ class LoginRegistration extends Component {
             sessionStorage.setItem(
               "user",
               JSON.stringify({ username: this.state.username })
+            );
+            sessionStorage.setItem(
+              "cookie",
+              result.data.cookie
             );
           })
           .catch((error) => {

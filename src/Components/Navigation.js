@@ -129,6 +129,7 @@ const Navigation = (props) => {
 
   const logoutUser = () => {
     sessionStorage.removeItem("user");
+    sessionStorage.removeItem("cookie");
     setIsLoggedIn(false);
     setOpenSnackBar(true);
   };

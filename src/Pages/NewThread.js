@@ -31,7 +31,12 @@ class NewThread extends React.Component {
 			return;
 		}
 		try {
-			var payload = {"threadforum":forumid,"threadtitle":threadtitle,"threadtext":threadtext};
+			var payload;
+			try {
+				payload = {"data":{"threadforum":forumid,"threadtitle":threadtitle,"threadtext":threadtext}, "cookie":sessionStorage.getItem("cookie")};
+			} catch (err) {
+				payload = {"data":{"threadforum":forumid,"threadtitle":threadtitle,"threadtext":threadtext}};
+			}
 			var postresponse = await axios.post("https://a4-4177-g15.herokuapp.com/thread", payload);
 			if (postresponse.status != 201) {
 				var errormessage = postresponse.data.message;

@@ -20,7 +20,12 @@ class ExpandedForum extends React.Component {
 	async componentDidMount() {
 		const forumId = this.props.match.params.forumId;
 		try {
-			var forumdatares = await axios("https://a4-4177-g15.herokuapp.com/forum/"+forumId);
+			var forumdatares;
+			try {
+				forumdatares = await axios("https://a4-4177-g15.herokuapp.com/forum/"+forumId, {"cookie":sessionStorage.getItem("cookie")});
+			} catch (err) {
+				forumdatares = await axios("https://a4-4177-g15.herokuapp.com/forum/"+forumId);
+			}
 			if (forumdatares.status != 200) {
 				var errormessage = forumdatares.message;
 				this.setState({ errormessage });

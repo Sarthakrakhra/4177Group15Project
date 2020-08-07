@@ -18,7 +18,12 @@ class ExpandedThread extends React.Component {
 	async componentDidMount() {
 		const threadId = this.props.match.params.threadId;
 		try {
-			var thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+			var thread;
+			try {
+				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId, {"cookie":sessionStorage.getItem("cookie")});
+			} catch (err) {
+				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+			}
 			if (thread.status != 200) {
 				var errormessage = thread.data.message;
 				this.setState({ errormessage });
@@ -41,7 +46,12 @@ class ExpandedThread extends React.Component {
 			return;
 		}
 		try {
-			var payload = {"commenttext":commenttext};
+			var payload;
+			try {
+				payload = {"data":{"commenttext":commenttext},"cookie":sessionStorage.getItem("cookie")};
+			} catch (err) {
+				payload = {"data":{"commenttext":commenttext}};
+			}
 			var postresponse = await axios.post("https://a4-4177-g15.herokuapp.com/thread/"+threadId, payload);
 			if (postresponse.status != 201) {
 				var errormessage = postresponse.data.message;

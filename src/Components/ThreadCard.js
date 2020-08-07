@@ -16,7 +16,12 @@ class ThreadCard extends React.Component {
 	async componentDidMount() {
 		const threadId = this.props.threadId;
 		try {
-			var thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+			var thread;
+			try {
+				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId, {"cookie":sessionStorage.getItem("cookie")});
+			} catch (err) {
+				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+			}
 			if (thread.status != 200) {
 				var errormessage = thread.data.message;
 				this.setState({ errormessage });
@@ -85,7 +90,7 @@ class ThreadCard extends React.Component {
 						        {thread.threadtitle}
 						      </Typography>
 						      <Typography variant="subtitle1" align="right">
-						        Forum: <Link to={`/forums/${thread.threadforum}`}>{thread.threadforum}</Link>
+						        Forum: <Link to={`/forums/${thread.threadforum}`}>{thread.forumname}</Link>
 						      </Typography>
 						    </div>
 						    <Typography variant="subtitle2" align="left">
