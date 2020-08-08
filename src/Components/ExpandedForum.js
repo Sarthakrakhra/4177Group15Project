@@ -22,9 +22,9 @@ class ExpandedForum extends React.Component {
 		try {
 			var forumdatares;
 			try {
-				forumdatares = await axios("https://a4-4177-g15.herokuapp.com/forum/"+forumId, {"cookie":sessionStorage.getItem("cookie")});
+				forumdatares = await axios.post("https://a4-4177-g15.herokuapp.com/forum/get/"+forumId, {"cookie":sessionStorage.getItem("cookie")});
 			} catch (err) {
-				forumdatares = await axios("https://a4-4177-g15.herokuapp.com/forum/"+forumId);
+				forumdatares = await axios.post("https://a4-4177-g15.herokuapp.com/forum/get/"+forumId);
 			}
 			if (forumdatares.status != 200) {
 				var errormessage = forumdatares.message;
@@ -38,6 +38,20 @@ class ExpandedForum extends React.Component {
 			this.setState({ errormessage });
 		}
 	}	
+	
+	async joinForum() {
+		if (!sessionStorage.getItem("cookie")) {
+			alert("You must be logged in to join a forum");
+			return;
+		}
+		try {
+			const forumId = document.getElementById("forumid").innerHTML;
+			var postresponse = await axios.post("https://a4-4177-g15.herokuapp.com/forum/join/"+forumId, {"cookie":sessionStorage.getItem("cookie")});
+			alert("Success, you are now a member of the forum and can create new threads and post comments");
+		} catch (err) {
+			alert("Error joining, you may already be a member");
+		}
+	}
 	
 	render() {
 		const classes = {
@@ -68,6 +82,7 @@ class ExpandedForum extends React.Component {
 				return (
 					<Container maxWidth="lg" className={classes.root}>
 						<div>
+							<div id="forumid">{forum.forumid}</div>
 						  <div className={classes.forumHeader}>
 						    <Typography variant="h3" align="left">
 						      {forum.forumname}
@@ -77,6 +92,7 @@ class ExpandedForum extends React.Component {
 						        <SettingsIcon></SettingsIcon>
 						      </IconButton>
 						    </Link>
+						    <Button variant="contained" onClick={this.joinForum}>Join</Button>
 						  </div>
 						  <Typography align="left">{forum.foruminfo}</Typography>
 						</div>

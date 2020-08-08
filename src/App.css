@@ -41,6 +41,10 @@
 	display:none;
 }
 
+#forumid {
+	display:none;
+}
+
 #newthreadcontainer {
 	display:relative;
 	text-align:center;

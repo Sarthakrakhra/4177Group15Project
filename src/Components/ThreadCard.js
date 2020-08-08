@@ -18,9 +18,9 @@ class ThreadCard extends React.Component {
 		try {
 			var thread;
 			try {
-				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId, {"cookie":sessionStorage.getItem("cookie")});
+				thread = await axios.post("https://a4-4177-g15.herokuapp.com/thread/thread/"+threadId, {"cookie":sessionStorage.getItem("cookie")});
 			} catch (err) {
-				thread = await axios("https://a4-4177-g15.herokuapp.com/thread/"+threadId);
+				thread = await axios.post("https://a4-4177-g15.herokuapp.com/thread/thread/"+threadId);
 			}
 			if (thread.status != 200) {
 				var errormessage = thread.data.message;
